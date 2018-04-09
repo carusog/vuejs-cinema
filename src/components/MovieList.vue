@@ -1,36 +1,60 @@
 <template>
     <div id="movie-list">
-        <div v-for="movie in filteredMovies" :key="movie.title" class="movie">
-            {{movie.title}}
+        <div v-if="filteredMovies.length">
+            <movie-item class="movie"
+                v-for="movieObject in filteredMovies"
+                :key="movieObject.id"
+                :movie="movieObject.movie"
+            ></movie-item>
+        </div>
+        <div v-else-if="movies.length" class="no-results">
+            No results
+        </div>
+        <div v-else class="no-results">
+            Loading...
         </div>
     </div>
 </template>
 <script>
 
 import genres from '../util/genres.js';
+import MovieItem from './MovieItem.vue';
 
 export default {
-    data() {
-        return {
-            movies: [
-                { title: "Kill Bill", genre: genres.CRIME },
-                { title: "Home Alone", genre: genres.COMEDY },
-                { title: "Austin Powers", genre: genres.COMEDY }
-            ]
-        };
+    components: {
+        MovieItem
     },
-    props: ["genre", "time"],
+    props: [
+        'selectedGenres',
+        'time',
+        'movies'
+    ],
     methods: {
         moviePassesGenreFilter(movie) {
-        return this.genre.length
-            ? this.genre.find(genre => movie.genre === genre)
-            : true;
+            if (!this.selectedGenres.length) {
+                return true;
+            } else {
+                let movieGenres = movie.movie.Genre.split(',').map(genre => genre.trim());
+                let matched = true;
+
+                this.selectedGenres.forEach(genre => {
+                    if (!movieGenres.includes(genre)) {
+                        matched = false;
+                    };
+                });
+                return matched;
+            }
         }
     },
     computed: {
         filteredMovies() {
             return this.movies.filter(this.moviePassesGenreFilter);
         }
+    },
+    created() {
+        console.log(this.movies);
+        console.log(this.selectedGenres);
+
     }
 };
 </script>

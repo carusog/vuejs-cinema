@@ -24,8 +24,11 @@
                 :selected-genres="genre"
                 :time="time"
                 :movies="movies"
+                :day="day"
             ></movie-list>
-            <movie-filter v-on:check-filter="checkFilter"></movie-filter>
+            <movie-filter
+                @check-filter="checkFilter">
+            </movie-filter>
         </div>
     </div>
 </div>

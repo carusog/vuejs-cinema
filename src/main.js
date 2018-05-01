@@ -6,6 +6,12 @@ import MovieFilter from './components/MovieFilter.vue';
 
 import VueResource from "vue-resource";
 
+import moment from "moment-timezone";
+moment.tz.setDefault("UTC");
+// $root is this same component, where I added a data.moment, getting it from there
+let momentGetter = { get() { return this.$root.moment } };
+Object.defineProperty(Vue.prototype, '$moment', momentGetter);
+
 Vue.use(VueResource);
 
 new Vue({
@@ -13,7 +19,9 @@ new Vue({
     data: {
         genre: [],
         time: [],
-        movies: []
+        movies: [],
+        moment,
+        day: moment()
     },
     methods: {
         checkFilter(category, title, checked) {

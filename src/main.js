@@ -12,6 +12,10 @@ moment.tz.setDefault("UTC");
 let momentGetter = { get() { return this.$root.moment } };
 Object.defineProperty(Vue.prototype, '$moment', momentGetter);
 
+import { checkFilter } from './util/bus';
+const bus = new Vue();
+Object.defineProperty(Vue.prototype, '$bus', { get() { return this.$root.bus } });
+
 Vue.use(VueResource);
 
 new Vue({
@@ -21,21 +25,10 @@ new Vue({
         time: [],
         movies: [],
         moment,
-        day: moment()
+        day: moment(),
+        bus
     },
     methods: {
-        checkFilter(category, title, checked) {
-
-            let titleIndex = this[category].indexOf(title);
-
-            let removeCategoryOfNull = titleIndex >= 0
-                ? this[category].splice(titleIndex, 1)
-                : null;
-
-            checked
-                ? this[category].push(title)
-                : removeCategoryOfNull;
-        }
     },
     components: {
         MovieList,
@@ -44,6 +37,7 @@ new Vue({
     created() {
         this.$http.get('/api').then(response => {
             this.movies = response.body;
-        })
+        });
+        this.$bus.$on('check-filter', checkFilter.bind(this));
     }
 })

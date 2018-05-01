@@ -8,7 +8,6 @@
                 :key="time.title"
                 :title="time"
                 :category="'time'"
-                @check-filter="checkFilter"
             ></check-filter>
             <h3>By Genre</h3>
             <check-filter
@@ -16,7 +15,6 @@
                 :key="genre.title"
                 :title="genre"
                 :category="'genre'"
-                @check-filter="checkFilter"
             ></check-filter>
         </div>
     </div>
@@ -33,11 +31,6 @@ export default {
         return {
             genres,
             times
-        }
-    },
-    methods: {
-        checkFilter(category, title, checked) {
-            this.$emit('check-filter', category, title, checked);
         }
     },
     components: {
